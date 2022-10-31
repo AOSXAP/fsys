@@ -1,0 +1,13 @@
+IMPLEMENTATION LIST:
+    https://en.cppreference.com/w/cpp/filesystem/canonical
+    https://en.cppreference.com/w/cpp/filesystem/copy_symlink
+    https://en.cppreference.com/w/cpp/filesystem/create_hard_link
+    https://en.cppreference.com/w/cpp/filesystem/create_symlink
+    https://en.cppreference.com/w/cpp/filesystem/hard_link_count
+    https://en.cppreference.com/w/cpp/filesystem/permissions
+    https://en.cppreference.com/w/cpp/filesystem/read_symlink
+    https://en.cppreference.com/w/cpp/filesystem/rename
+    https://en.cppreference.com/w/cpp/filesystem/status
+
+    !!!
+    last_write_time - readable format and correct return
