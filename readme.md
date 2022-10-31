@@ -24,8 +24,4 @@ Implement any feature (or fix existing ones) , modify `core.cpp` and send a pull
 - Compile via command:  g++ ./core.cpp -I/usr/include/lua5.4 -llua -fPIC -shared -o fsys.so (or whatever your lua version is)
 - file.lua code:
 
-`local fsys = require("fsys") `
-
-`local e = fsys.current_path("./core.cpp")`
-
-`print(e)`
+`local fsys = require("fsys"); local e = fsys.current_path("./core.cpp"); print(e)`
