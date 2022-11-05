@@ -1,4 +1,4 @@
-//g++ ./core.cpp -I/usr/include/lua5.4 -llua -fPIC -shared -o fsys.so 
+//g++ ./core.cpp -I/usr/include/lua5.4 -llua5.4 -fPIC -shared -o fsys.so 
 
 #include <iostream>
 #include <fstream>
@@ -21,10 +21,25 @@ namespace fs = std::filesystem;
 
 extern "C"
 {
-    //convert bytes to human readable
+    static int scand_dir(lua_State *L){
+        const char *pathx = luaL_checkstring(L,1);
+        int index = 1;
+
+        lua_newtable(L);
+
+        for (const auto & entry : fs::directory_iterator(pathx)){
+            lua_pushnumber(L, index++);
+            lua_pushstring(L, entry.path().c_str());
+            lua_settable(L, -3);
+        }
+
+        return 1;
+    }   
+
+    //later: convert bytes to human readable
     static int file_size(lua_State *L) 
     {
-        const char *p = lua_tostring(L,-1);
+        const char *p = luaL_checkstring(L,1);
 
         try 
         {
@@ -41,7 +56,7 @@ extern "C"
 
     static int abs_path(lua_State *L) 
     {
-        const char *str = lua_tostring(L,-1);
+        const char *str = luaL_checkstring(L,1);
         fs::path p = str, s = fs::absolute(p);
         
         lua_pushstring(L, s.c_str());
@@ -66,7 +81,7 @@ extern "C"
     
     static int relative_path(lua_State *L)
     {
-        const char *x = lua_tostring(L,1), *y = lua_tostring(L,2);
+        const char *x = luaL_checkstring(L,1), *y = luaL_checkstring(L,2);
         fs::path p = fs::relative(x,y);
 
         lua_pushstring(L, p.c_str());
@@ -77,7 +92,7 @@ extern "C"
     //catch errors if file alrady exists
     static int copy(lua_State *L)
     {
-        const char *x = lua_tostring(L,1), *y = lua_tostring(L,2);
+        const char *x = luaL_checkstring(L,1), *y = luaL_checkstring(L,2);
 
         try 
         {
@@ -96,7 +111,7 @@ extern "C"
 
     static int equivalent(lua_State *L)
     {
-        const char *f1 = lua_tostring(L,1), *f2 = lua_tostring(L,2);
+        const char *f1 = luaL_checkstring(L,1), *f2 = luaL_checkstring(L,2);
 
         if(fs::equivalent(f1, f2))
             lua_pushboolean(L,true);
@@ -108,7 +123,7 @@ extern "C"
 
     static int create_dir(lua_State *L) 
     {
-        const char *str = lua_tostring(L,-1);
+        const char *str = luaL_checkstring(L,1);
 
         try 
         {
@@ -126,8 +141,17 @@ extern "C"
 
     static int file_exists(lua_State *L)
     {
-        const char *str = lua_tostring(L,-1);
+        const char *str = luaL_checkstring(L,1);
         if(fs::exists(str)) lua_pushboolean(L,true);
+        else lua_pushboolean(L,false);
+
+        return 1;
+    }
+
+    static int is_dir(lua_State *L){
+        const char *str = luaL_checkstring(L,1);
+        if( std::filesystem::is_directory(str)) 
+            lua_pushboolean(L,true);
         else lua_pushboolean(L,false);
 
         return 1;
@@ -139,7 +163,7 @@ extern "C"
     /*
     static int last_write_time(lua_State *L)
     {
-        const char *path = lua_tostring(L,-1);
+        const char *path = luaL_checkstring(L,-1);
         auto ftime = std::filesystem::last_write_time(path);
 
         lua_pushnumber(L, 77);
@@ -149,8 +173,8 @@ extern "C"
 
     static int resize_file(lua_State *L)
     {
-        const char *str = lua_tostring(L,1);
-        std::uintmax_t sizex = lua_tonumber(L,2);
+        const char *str = luaL_checkstring(L,1);
+        std::uintmax_t sizex = luaL_checknumber(L,2);
         try {
             fs::resize_file(str,sizex);
             lua_pushboolean(L,true);
@@ -165,7 +189,7 @@ extern "C"
 
     static int file_type(lua_State *L)
     {
-        const char *s = lua_tostring(L,1);
+        const char *s = luaL_checkstring(L,1);
         std::string typex = "";
 
         if(fs::is_regular_file(s)) typex = "is a regular file";
@@ -198,10 +222,12 @@ extern "C"
         {"copy", copy},
         {"equivalent", equivalent},
         {"create_dir", create_dir},
+        {"is_dir", is_dir},
         {"file_exists", file_exists},
         {"resize_file", resize_file},
         {"temp_dir_path",temp_dir_path},
         {"file_type", file_type},
+        {"scand_dir", scand_dir},
         {"current_path",current_path},
         //{"last_write_time", last_write_time}, implement
         {NULL, NULL}  /* sentinel */
