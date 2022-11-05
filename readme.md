@@ -21,7 +21,7 @@ Implement any feature (or fix existing ones) , modify `core.cpp` and send a pull
 
 ## Use
 
-- Compile via command:  g++ ./core.cpp -I/usr/include/lua5.4 -llua -fPIC -shared -o fsys.so (or whatever your lua version is)
+- Compile via command:  g++ ./core.cpp -I/usr/include/lua5.4 -llua5.4 -fPIC -shared -o fsys.so (or whatever your lua version is)
 - file.lua code:
 
 ```lua
