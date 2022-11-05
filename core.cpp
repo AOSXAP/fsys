@@ -227,7 +227,7 @@ extern "C"
         {"resize_file", resize_file},
         {"temp_dir_path",temp_dir_path},
         {"file_type", file_type},
-        {"scand_dir", scand_dir},
+        {"scan", scand_dir},
         {"current_path",current_path},
         //{"last_write_time", last_write_time}, implement
         {NULL, NULL}  /* sentinel */
