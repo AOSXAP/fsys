@@ -24,7 +24,7 @@ Implement any feature (or fix existing ones) , modify `core.cpp` and send a pull
 - Compile via command:  g++ ./core.cpp -I/usr/include/lua5.4 -llua -fPIC -shared -o fsys.so (or whatever your lua version is)
 - file.lua code:
 
-```
+```lua
 local fsys = require("fsys");
 
 e = fsys.scan("./test_dir"); 
