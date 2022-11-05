@@ -24,4 +24,25 @@ Implement any feature (or fix existing ones) , modify `core.cpp` and send a pull
 - Compile via command:  g++ ./core.cpp -I/usr/include/lua5.4 -llua -fPIC -shared -o fsys.so (or whatever your lua version is)
 - file.lua code:
 
-`local fsys = require("fsys"); local e = fsys.current_path("./core.cpp"); print(e)`
+```
+local fsys = require("fsys");
+
+e = fsys.scan("./test_dir"); 
+
+function scan(e, padding)
+    for k, v in pairs(e) do 
+        for i = 0 , padding - 1 do 
+            io.write("\t")
+        end
+        io.write(v, '\n')
+
+        if(fsys.is_dir(v) == true) then
+            q = fsys.scan(v); 
+            scan(q , padding + 1)    
+        end
+
+    end
+end
+
+scan(e, 0)
+```
